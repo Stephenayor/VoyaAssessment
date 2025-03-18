@@ -85,13 +85,14 @@ fun FoodHomeScreen(
 ) {
     val categoriesState by foodHomeViewModel.categoriesState.collectAsState()
     val allFoodState by foodHomeViewModel.allFoodState.collectAsState()
+
     // Categories
     var categoriesList by remember { mutableStateOf(emptyList<Categories.CategoriesData>()) }
     var mainCategoriesList = listOf<Categories.CategoriesData>()
 
     // Foods
     var foodsList by remember { mutableStateOf(emptyList<Food.FoodData>()) }
-    var filteredFoodsList by remember { mutableStateOf(emptyList<Food.FoodData>()) }
+    var filteredFoodsList = listOf<Food.FoodData>()
 
     // UI states
     var isLoading by remember { mutableStateOf(false) }
@@ -214,13 +215,14 @@ fun FoodHomeScreen(
                     value = searchQuery,
                     onValueChange = { newQuery ->
                         searchQuery = newQuery
-                        filteredFoodsList = if (newQuery.isEmpty()) {
-                            foodsList
-                        } else {
-                            foodsList.filter {
-                                it.name?.contains(newQuery, ignoreCase = true) == true
-                            }
+
+                        val filteredMeals = foodsList.filter {
+                            it.name?.contains(
+                                newQuery,
+                                ignoreCase = true
+                            ) == true
                         }
+                        filteredFoodsList = if (newQuery.isEmpty()) foodsList else filteredMeals
 
                         val filtered = categoriesList.filter {
                             it.name?.contains(
@@ -269,6 +271,7 @@ fun FoodHomeScreen(
                         }
                     }
                 }
+                FoodListScreen(filteredFoodsList)
 
                 if (isLoadingCategories) {
                     Box(
@@ -329,7 +332,6 @@ fun FoodHomeScreen(
                         isLoading = false
                         foodsList = foodState.data?.data ?: emptyList()
                         filteredFoodsList = foodsList
-//                        FoodListScreen(filteredFoodsList)
                     }
 
                     is ApiResponse.Failure -> {
@@ -341,8 +343,6 @@ fun FoodHomeScreen(
                     }
                 }
 
-
-                FoodListScreen(filteredFoodsList)
 
                 if (showDialog) {
                     CustomAlertDialog(
@@ -488,8 +488,6 @@ fun TagItem(tag: String) {
 }
 
 
-
-
 @Composable
 fun BottomNavigationBar() {
     var selectedItem by remember { mutableIntStateOf(0) }
@@ -531,7 +529,6 @@ fun BottomNavigationBar() {
         }
     }
 }
-
 
 
 @Preview
