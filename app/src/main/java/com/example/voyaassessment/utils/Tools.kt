@@ -9,11 +9,12 @@ import java.io.FileOutputStream
 
 class Tools {
     companion object{
+
         fun showToast(context: Context?, message: String?) {
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
 
-        // Save Bitmap to Internal Storage (for Camera images)
+        // Save Bitmap to Internal Storage when using Camera
         fun saveImageToInternalStorage(context: Context, bitmap: Bitmap): Uri {
             val filename = "${System.currentTimeMillis()}.jpg"
             val file = File(context.filesDir, filename)
@@ -22,5 +23,20 @@ class Tools {
             outputStream.close()
             return Uri.fromFile(file)
         }
+
+        fun uriToFile(context: Context, uri: Uri): File? {
+            return try {
+                val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+                val tempFile = File.createTempFile("upload_", ".jpg", context.cacheDir)
+                tempFile.outputStream().use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+                tempFile
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
     }
 }

@@ -13,12 +13,12 @@ class MealHomeRepositoryImpl @Inject constructor(
     private val webService: WebService
 ): MealHomeRepository {
     override suspend fun getTags() = flow {
-        emit(ApiResponse.Loading) // Emit loading state before the network call
+        emit(ApiResponse.Loading)
         try {
             val response = webService.getTags()
             emit(ApiResponse.Success(response))
         } catch (e: Exception) {
-            emit(ApiResponse.Failure(e, null)) // Emit failure state with the exception
+            emit(ApiResponse.Failure(e, null))
         }
     }
 

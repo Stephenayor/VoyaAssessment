@@ -1,7 +1,9 @@
 package com.example.voyaassessment.di
 
 import com.example.voyaassessment.data.WebService
+import com.example.voyaassessment.data.repository.CreateFoodRepositoryImpl
 import com.example.voyaassessment.data.repository.MealHomeRepositoryImpl
+import com.example.voyaassessment.domain.CreateFoodRepository
 import com.example.voyaassessment.domain.MealHomeRepository
 import com.example.voyaassessment.utils.AppConstants
 import com.squareup.moshi.Moshi
@@ -61,5 +63,13 @@ object AppModule {
         webService: WebService
     ): MealHomeRepository {
         return MealHomeRepositoryImpl(webService)
+    }
+
+    @Provides
+    @Singleton
+    fun CreateFoodRepository(
+        webService: WebService
+    ): CreateFoodRepository {
+        return CreateFoodRepositoryImpl(webService)
     }
 }
