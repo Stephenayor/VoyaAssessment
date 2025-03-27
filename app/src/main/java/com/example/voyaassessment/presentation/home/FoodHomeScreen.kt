@@ -1,8 +1,10 @@
 package com.example.voyaassessment.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -209,6 +211,17 @@ fun FoodHomeScreen(
                     fontFamily = FontFamily.SansSerif
                 )
 
+                if (isLoadingCategories) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                    foodHomeViewModel.clearLoadingState()
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
@@ -271,19 +284,7 @@ fun FoodHomeScreen(
                         }
                     }
                 }
-                FoodListScreen(filteredFoodsList)
-
-                if (isLoadingCategories) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                    foodHomeViewModel.clearLoadingState()
-                }
-
+                FoodListScreen(filteredFoodsList, navController)
 
                 if (showRetryText) {
                     val annotatedText = buildAnnotatedString {
@@ -304,7 +305,6 @@ fun FoodHomeScreen(
                     ClickableText(
                         text = annotatedText,
                         onClick = { offset ->
-                            // Check if the click happened on the "Please Retry" annotation
                             annotatedText.getStringAnnotations(
                                 tag = "retry",
                                 start = offset,
@@ -360,7 +360,7 @@ fun FoodHomeScreen(
 
 
 @Composable
-fun FoodListScreen(allFoodState: List<Food.FoodData>) {
+fun FoodListScreen(allFoodState: List<Food.FoodData>, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -379,7 +379,7 @@ fun FoodListScreen(allFoodState: List<Food.FoodData>) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(allFoodState) { food ->
-                    FoodCard(food)
+                    FoodCard(food, navController)
                 }
             }
         }
@@ -387,13 +387,16 @@ fun FoodListScreen(allFoodState: List<Food.FoodData>) {
 }
 
 @Composable
-fun FoodCard(food: Food.FoodData) {
+fun FoodCard(food: Food.FoodData, navController: NavController) {
     Card(
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(0.5.dp, Color(0xFFE0E0E0)),
         modifier = Modifier.fillMaxWidth()
+            .clickable {
+                navController.navigate("foodDetailsScreen/${food.id}")
+            }
     ) {
         Column {
             AsyncImage(

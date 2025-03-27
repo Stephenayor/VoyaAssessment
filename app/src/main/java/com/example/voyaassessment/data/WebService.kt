@@ -4,13 +4,15 @@ import com.example.voyaassessment.data.model.Tags
 import com.example.voyaassessment.data.model.remote.Categories
 import com.example.voyaassessment.data.model.remote.CreateFoodResponse
 import com.example.voyaassessment.data.model.remote.Food
-import com.example.voyaassessment.utils.ApiResponse
+import com.example.voyaassessment.data.model.remote.FoodDetails
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface WebService {
     @GET("api/tags")
@@ -22,6 +24,10 @@ interface WebService {
     @GET("api/foods")
     suspend fun getFood(): Food
 
+    @GET("api/foods/" +"{id}")
+    suspend fun getFoodDetails(@Path("id") foodId: Int): Response<FoodDetails>
+
+
     @Multipart
     @POST("api/foods")
     suspend fun createFood(
@@ -31,5 +37,5 @@ interface WebService {
         @Part("calories") calories: RequestBody,
         @Part tags: List<MultipartBody.Part>,
         @Part images: List<MultipartBody.Part>
-    ): CreateFoodResponse
+    ): Response<CreateFoodResponse>
 }

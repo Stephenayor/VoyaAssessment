@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Toast
+import com.google.gson.Gson
 import java.io.File
 import java.io.FileOutputStream
 
@@ -37,6 +38,9 @@ class Tools {
                 null
             }
         }
+
+         fun handleErrorResponse(errorBody: String?): ApiResponse.ErrorResponse? =
+            Gson().fromJson(errorBody, ApiResponse.ErrorResponse::class.java)
 
     }
 }

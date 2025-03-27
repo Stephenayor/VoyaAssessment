@@ -278,7 +278,7 @@ fun CreateFoodDetailsScreen(
             }
 
             is ApiResponse.Failure -> {
-                Tools.showToast(context, (createFoodResponse as ApiResponse.Failure).e?.message)
+                Tools.showToast(context, (createFoodResponse as ApiResponse.Failure).message)
             }
 
             else -> Unit
@@ -456,7 +456,6 @@ fun ChipsTextField(
     onTagRemove: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // A Box that draws an outline to mimic an OutlinedTextField style
     Box(
         modifier = modifier
             .border(1.dp, Color.LightGray, RoundedCornerShape(4.dp))

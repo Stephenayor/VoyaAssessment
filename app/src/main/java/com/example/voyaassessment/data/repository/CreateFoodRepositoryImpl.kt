@@ -27,6 +27,31 @@ class CreateFoodRepositoryImpl @Inject constructor(
         }
     }
 
+    //Initial Working Version
+//    override suspend fun createFood(createFood: CreateFood): Flow<ApiResponse<CreateFoodResponse>> =
+//        flow {
+//            emit(ApiResponse.Loading)
+//            val tags = listOf(1, 2, 3)
+//            val tagsParts = tags.map { tag ->
+//                MultipartBody.Part.createFormData("tags[]", tag.toString())
+//            }
+//            try {
+//                val response = webService.createFood(
+//                    name = createFood.name.toRequestBody(),
+//                    description = createFood.description.toRequestBody(),
+//                    categoryId = createFood.categoryId.toString().toRequestBody(),
+//                    calories = createFood.calories.toString().toRequestBody(),
+//                    tags = tagsParts,
+//                    images = createFood.images
+//                )
+//                emit(ApiResponse.Success(response))
+//            } catch (e: Exception) {
+//                emit(ApiResponse.Failure(e, e.message))
+//            }
+//        }
+
+
+    //Revamped
     override suspend fun createFood(createFood: CreateFood): Flow<ApiResponse<CreateFoodResponse>> =
         flow {
             emit(ApiResponse.Loading)
@@ -42,8 +67,18 @@ class CreateFoodRepositoryImpl @Inject constructor(
                     calories = createFood.calories.toString().toRequestBody(),
                     tags = tagsParts,
                     images = createFood.images
-                )
-                emit(ApiResponse.Success(response))
+                ) // This returns Response<CreateFoodResponse>
+                if (response.isSuccessful) {
+                    emit(ApiResponse.Success(response.body()))
+                } else {
+                    emit(
+                        ApiResponse.Failure(
+                            error = Exception("Error code: ${response.code()}"),
+                            message = response.message(),
+                            errorCode = response.code()
+                        )
+                    )
+                }
             } catch (e: Exception) {
                 emit(ApiResponse.Failure(e, e.message))
             }

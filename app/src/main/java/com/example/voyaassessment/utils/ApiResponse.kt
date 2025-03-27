@@ -9,9 +9,16 @@ sealed class ApiResponse<out T> {
     ): ApiResponse<T>()
 
     data class Failure(
-        val e: Exception?,
-        val message: String?
-    ): ApiResponse<Nothing>()
+        val error: Throwable?,
+        val message: String?,
+        val errorCode: Int? = null
+    ) : ApiResponse<Nothing>()
+
+    data class ErrorResponse(
+        val status: String,
+        val message: String,
+        val errors: Map<String, List<String>>
+    )
 
 
 }
