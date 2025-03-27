@@ -22,6 +22,9 @@
 - **Compose Navigation**
 - **States**
 
+## Download the APK
+- https://drive.google.com/file/d/1i-H3hRinZtGebZJ5Ee-_00AkZft6xJkr/view?usp=drive_link
+
 
 ## How to Run the Project
 
